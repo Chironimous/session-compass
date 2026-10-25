@@ -1,0 +1,16 @@
+# .ccscignore — answer texts the conversation browser leaves out
+#
+# The browser shows each prompt's final answer: the turn's last substantial
+# text in Claude's own voice. A text that matches a rule here is dropped
+# first, so it can never become the answer: useful for housekeeping replies
+# such as a /loop's.
+#
+# The mod ships this text as .ccscignore.def and copies it to .ccscignore on
+# first use. Edit .ccscignore: an update of the mod replaces only
+# .ccscignore.def.
+
+# plain lines = exact match (trimmed)
+Awaken skipped.
+
+# /…/ = regular expression
+/^Commandments loaded\./

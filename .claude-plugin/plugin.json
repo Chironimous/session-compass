@@ -1,0 +1,12 @@
+{
+  "name": "session-compass",
+  "displayName": "Session Compass",
+  "version": "0.6.0",
+  "description": "See how full your context is, jump back to any prompt, and get a summary of the whole conversation.",
+  "author": { "name": "Chironimous" },
+  "homepage": "https://github.com/Chironimous/session-compass",
+  "repository": "https://github.com/Chironimous/session-compass",
+  "license": "MIT",
+  "keywords": ["context window", "session", "conversation", "prompt navigator", "summary", "timeline"],
+  "types": "./types/index.d.ts"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "chironimous",
+  "description": "Claude Code mods by Chironimous",
+  "owner": {
+    "name": "Chironimous",
+    "url": "https://github.com/Chironimous"
+  },
+  "plugins": [
+    {
+      "name": "session-compass",
+      "source": "./",
+      "description": "See how full your context is, jump back to any prompt, and get a summary of the whole conversation."
+    }
+  ]
+}
