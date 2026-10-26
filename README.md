@@ -326,6 +326,23 @@ To check all this yourself, clone the repository
 `claude plugin validate session-compass`. Its `hooks:` and `calls:` lines list
 every event the mod handles and everything it asks Claude Code to do.
 
+## Privacy
+
+Session Compass collects nothing for its author: it has no server, no
+account and no telemetry, and it sends nothing to anyone but Claude.
+
+- What it keeps stays on your computer: its store (the first 100 characters
+  of each prompt among other session data), your rules file, and the
+  summaries and timelines in your projects' `.ccsc/` folders. Your prompts may
+  contain personal data, so these files may too. Uninstalling leaves them;
+  [Uninstall](#uninstall) says where they are.
+- Only when you press "Generate summary & timeline" or "Regenerate" does it
+  send a digest of the conversation to Claude Opus, through your own Claude
+  Code session. Anthropic's terms and privacy policy apply to those requests,
+  as to every other request of your session.
+- `⧉` and `⧉ Session` put text on your clipboard, and only when you press
+  them.
+
 ## License
 
 MIT, © 2026 Chironimous. See [LICENSE](LICENSE). The bundled fast-png,

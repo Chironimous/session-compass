@@ -1,11 +1,12 @@
 {
   "name": "session-compass",
   "displayName": "Session Compass",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "The Claude Code Mod with the power user features Anthropic forgot to implement",
   "author": { "name": "Chironimous" },
   "homepage": "https://github.com/Chironimous/session-compass",
   "repository": "https://github.com/Chironimous/session-compass",
+  "privacyPolicyUrl": "https://github.com/Chironimous/session-compass#privacy",
   "license": "MIT",
   "keywords": ["context window", "session", "conversation", "prompt navigator", "summary", "timeline"],
   "types": "./types/index.d.ts"
