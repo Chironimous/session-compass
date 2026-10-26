@@ -204,6 +204,31 @@ export function copyTextOf(entry: BrowserEntry, number: number, isNewest = false
   return `# Prompt ${number}\n\n${entry.prompt}\n\n# Response ${number}\n\n${response}\n`
 }
 
+/**
+ * The whole conversation as Markdown for the clipboard (the Info pane's
+ * `⧉ Session`): its title and details, then every prompt and its whole
+ * answer as the browser's ⧉ copies one, under `## Prompt n · date` and
+ * `## Response n` (decided 2026-10-26). Built from the entries in memory, a
+ * few milliseconds even for a 100 MB transcript.
+ */
+export function sessionCopyText(session: SessionNode, entries: readonly BrowserEntry[]): string {
+  const properties = session.properties
+  const details = [`**Conversation:** ${session.id}`]
+  if (properties.created) details.push(`**Created:** ${whenOf(properties.created)}`)
+  if (properties.modified) details.push(`**Modified:** ${whenOf(properties.modified)}`)
+  if (properties.models.length > 0) details.push(`**Model:** ${properties.models.join(', ')}`)
+  if (properties.compacted) details.push('**Note:** this conversation was compacted')
+  const pairs = entries.map((entry, index) => {
+    const number = index + 1
+    const when = whenOf(entry.at)
+    const response = entry.answers.length > 0
+      ? entry.answers.join('\n\n---\n\n')
+      : answerMarkdown(entry, Number.POSITIVE_INFINITY, number === entries.length)
+    return `## Prompt ${number}${when ? ` · ${when}` : ''}\n\n${entry.prompt}\n\n## Response ${number}\n\n${response}`
+  })
+  return [`# ${properties.title ?? session.id}`, '', details.join('  \n'), '', pairs.join('\n\n'), ''].join('\n')
+}
+
 /** How many characters of answer text one drawing shows (a drawing holds 100 000). */
 export const ANSWER_LIMIT = 60_000
 

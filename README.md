@@ -1,6 +1,8 @@
-# Session Compass
+# Session Compass for Claude Code
 
-**Master long sessions in Claude Code CLI, Claude Code Desktop, and the Claude Code extension for VS Code!**
+**The power user features Anthropic forgot to implement in Claude Code CLI, Claude Code in the Desktop app, and the Claude Code extension for VS Code!**
+
+![A tangled conversation becomes browse, search, understand and document](image/README/1793051309836.png)
 
 ![Session Compass's band above the prompt in VS Code: context fill, history graph and buttons](image/README/1793019543046.png)
 
@@ -141,7 +143,7 @@ the browser opens, and no update of the mod touches it.
 
 `ⓘ` opens a pane about the current conversation, with three tabs:
 
-![The Info pane with the summary of a conversation](image/README/1793020751548.png)
+![The Info pane with the summary of a conversation](image/README/1793047721924.png)
 
 - **Summary:** purpose, outcome, key decisions, notable details and open
   items, in the language of your prompts.
@@ -161,7 +163,9 @@ bar while it runs, and you can cancel. When the conversation has gone on
 since, the pane offers "Regenerate". Very long conversations are condensed to
 their most recent part, and the summary says so.
 
-`⧉` copies the shown tab as Markdown.
+`⧉` copies the shown tab as Markdown. `⧉ Session` copies the whole
+conversation: every prompt and its answer as the browser shows them,
+numbered, under the conversation's title and details.
 
 The results are kept in your project, in `.ccsc/<session id>/`, so they are
 there the next time you open the pane. The mod adds a `.ccsc/.gitignore`, so
@@ -180,6 +184,7 @@ table.
 | `☰`                                  | Puts `/context` into the prompt box                                                 |
 | `◔`                                  | Puts `/usage` into the prompt box                                                   |
 | `⧉`                                  | Copies the shown prompt and answer (browser) or the shown tab (Info pane) as Markdown |
+| `⧉ Session`                          | Copies the whole conversation as Markdown (Info pane)                                 |
 | `♻`                                  | Puts the shown prompt back into the prompt box (browser)                              |
 | `▲` `▼`                           | The previous or next prompt that contains the search text (browser)                   |
 | `↓ n`                                | Goes to prompt n: in the browser (VS Code, Desktop app) or in the chat (terminal)     |

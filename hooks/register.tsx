@@ -48,6 +48,7 @@ import {
   answerMarkdown,
   conversationOf,
   copyTextOf,
+  sessionCopyText,
   findMatches,
   matchLabel,
   nextMatch,
@@ -1109,6 +1110,18 @@ export const register: Register = on => {
           })
           .catch(error => debug($, `not copied: ${messageOf(error)}`))
       }
+      // ⧉ Session copies the whole conversation as the browser shows it,
+      // built when pressed from the entries in memory (milliseconds), and
+      // asked for first, in the press.
+      const prompts = conversation.entries.length
+      const copySession = (press: { surface: typeof e.surface }) => {
+        $.ui.copy({ text: sessionCopyText(session, conversation.entries), surface: press.surface })
+          .then(result => {
+            if (result.isCopied) $.ui.toast(`Session copied as Markdown (${prompts} prompt${prompts === 1 ? '' : 's'})`)
+            else debug($, `session not copied: ${result.reason}`)
+          })
+          .catch(error => debug($, `session not copied: ${messageOf(error)}`))
+      }
       const tabs = [
         ['summary', 'Summary'],
         ['timeline', 'Timeline'],
@@ -1245,10 +1258,15 @@ export const register: Register = on => {
                   <Button key={`info-tab-${id}`} label={name} dimColor={tab !== id} onPress={setTab(id)} />
                 </Box>
               ))}
+              {/* No ⧉ while the tab has nothing to copy (the panel's Buttons cannot be greyed out). */}
+              {copyText !== null ? (
+                <Box marginLeft={1}>
+                  <Button key="info-copy" label="⧉" onPress={copy} />
+                </Box>
+              ) : undefined}
             </Box>
             <Box flexGrow={1} />
-            {/* No ⧉ while the tab has nothing to copy (the panel's Buttons cannot be greyed out). */}
-            {copyText !== null ? <Button key="info-copy" label="⧉" onPress={copy} /> : undefined}
+            {prompts > 0 ? <Button key="info-copy-session" label="⧉ Session" onPress={copySession} /> : undefined}
           </Box>
           {tab === 'summary' || tab === 'timeline' ? (
             <Box marginTop={1} flexDirection="column">

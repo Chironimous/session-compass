@@ -246,6 +246,7 @@ export const BUTTON_ROWS: ReadonlyArray<readonly [string, string]> = [
   ['`☰`', 'Puts `/context` into the prompt box'],
   ['`◔`', 'Puts `/usage` into the prompt box'],
   ['`⧉`', 'Copies, as Markdown: the shown prompt and its answer (browser), or the shown tab (Info pane)'],
+  ['`⧉ Session`', 'Copies the whole conversation as Markdown: every prompt and its answer (Info pane)'],
   ['`♻`', 'Puts the shown prompt back into the prompt box (browser)'],
   ['`▲` `▼`', 'The previous or next prompt that contains the search text (browser)'],
   ['`↓ n`', 'Sets the browser to prompt n (VS Code, Desktop app; its tab stays behind this pane), or scrolls the chat there (terminal)'],
