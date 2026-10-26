@@ -31,7 +31,7 @@ import {
   type SummaryRecord,
   type TimelineRecord,
 } from './info'
-import { colorFor, promptsLabel, rasterCells, svgSource } from './graph'
+import { colorFor, rasterCells, svgSource } from './graph'
 import { BAR_COLUMNS, bandParts, GRAPH_COLUMNS, headerParts, PANEL_SCALE_NOT_WINDOWS, SPARK_CELLS } from './layout'
 import {
   appendLive,
@@ -70,6 +70,16 @@ const infoVersion = atom({ plugin: 'session-compass', key: 'infoVersion' } as co
 
 /** The usage bar's cells (10 since 2026-10-19, to make room for the navigator). */
 const CELLS = 10
+/**
+ * Where the conversation browser (`⇅`) replaces the navigator: surfaces whose
+ * chat a mod cannot scroll, the VS Code panel ("transcript not scrollable
+ * here", extension 2.1.309) and the Desktop app's Code tab (its navigator did
+ * nothing, seen 2026-10-26).
+ */
+function hasBrowser(surface: string): boolean {
+  return surface === 'vscode' || surface === 'desktop'
+}
+
 /** The terminal legend's button column: the widest label, `◀◀ ◀ n/N ▶ ▶▶`, and a gap. */
 const LEGEND_BUTTON_COLUMNS = 16
 /**
@@ -955,7 +965,10 @@ export const register: Register = on => {
           <Box marginLeft={2}>
             <Svg
               source={svgSource(shown, shown.window, GRAPH_WIDTH, GRAPH_HEIGHT, redraw)}
-              alt={`Context per request: ${shown.tokens.length} requests over ${promptsLabel(prompts)}`}
+              // A space: where the panel does not draw the picture it shows
+              // the alt text, and a sentence there pushed the buttons onto a
+              // second line (decided 2026-10-26).
+              alt=" "
               width={GRAPH_WIDTH}
               height={GRAPH_HEIGHT}
               isInteractive
@@ -981,13 +994,13 @@ export const register: Register = on => {
                 Each group is one box that never wraps: the panel's row wraps
                 its children (a row Box is `flex-wrap: wrap` there unless told
                 otherwise), and a lone button landed on a second line. */}
-            {/* VS Code's panel refuses a mod's scroll to a chat message
-                (extension 2.1.309), so there one button opens the browser
-                in place of the navigator; everywhere else the navigator. */}
-            {/* VS Code: two pairs, ⇅ ⓘ (the panes) and ☰ ◔ (the commands),
+            {/* Where a mod cannot scroll the chat (hasBrowser: the VS Code
+                panel and the Desktop app) one button opens the browser in
+                place of the navigator; in a terminal the navigator. */}
+            {/* There: two pairs, ⇅ ⓘ (the panes) and ☰ ◔ (the commands),
                 about a pixel apart within a pair so that buttons never touch,
                 a cell between the pairs (decided 2026-10-26). */}
-            {e.surface === 'vscode' ? (
+            {hasBrowser(e.surface) ? (
               <Box marginLeft={groupGap} flexWrap="nowrap">
                 <Button key="browse" label="⇅" onPress={browse} />
                 <Box marginLeft={PAIR_GAP}>
@@ -1012,7 +1025,7 @@ export const register: Register = on => {
                 </Box>
               </Box>
             ) : undefined}
-            {e.surface === 'vscode' ? (
+            {hasBrowser(e.surface) ? (
               parts.commands ? (
                 <Box marginLeft={groupGap} flexWrap="nowrap">
                   <Button key="context" label="☰" onPress={offer('context')} />
@@ -1123,13 +1136,13 @@ export const register: Register = on => {
       const expected = infoRun ? null : expectedSeconds(session)
       const expectation = expected === null ? '' : ` about ${formatSeconds(expected)}`
 
-      // A timeline entry's `↓ n` sets the browser to its prompt in VS Code
-      // (its tab stays where it is); elsewhere the chat scrolls there (the
-      // navigator's jump, by the prompt's row id).
+      // A timeline entry's `↓ n` sets the browser to its prompt where the
+      // browser replaces the navigator (its tab stays where it is); in a
+      // terminal the chat scrolls there (the navigator's jump, by row id).
       const numberOf = new Map(session.pairs.map((pair, index) => [pair.id, index + 1]))
       const rowIdOf = new Map(session.pairs.map(pair => [pair.id, pair.prompt.recordUuid]))
       const goTo = (pairId: string, n: number) => () => {
-        if (e.surface === 'vscode') {
+        if (hasBrowser(e.surface)) {
           openBrowserAt($, n).catch(error => debug($, `browser not opened: ${messageOf(error)}`))
           return
         }

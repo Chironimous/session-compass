@@ -149,8 +149,3 @@ export function rasterCells(history: History, window: number | null, columns: nu
   words.forEach((word, index) => view.setUint32(index * 4, word, true))
   return base64Of(bytes)
 }
-
-/** "63 prompts" / "1 prompt". */
-export function promptsLabel(count: number): string {
-  return `${count} prompt${count === 1 ? '' : 's'}`
-}

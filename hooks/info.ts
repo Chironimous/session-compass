@@ -240,15 +240,15 @@ export function markdownTable(rows: ReadonlyArray<readonly [string, string]>, he
  * Markdown; the README's "All buttons" table holds the same rows.
  */
 export const BUTTON_ROWS: ReadonlyArray<readonly [string, string]> = [
-  ['`⇅`', 'Opens the conversation browser (VS Code panel)'],
-  ['`◀◀` `◀` `n/N` `▶` `▶▶`', 'Ten or one prompt back or forward; `n/N` shows the current prompt again (the navigator in a terminal, the browser in VS Code)'],
+  ['`⇅`', 'Opens the conversation browser (VS Code, Desktop app)'],
+  ['`◀◀` `◀` `n/N` `▶` `▶▶`', 'Ten or one prompt back or forward; `n/N` shows the current prompt again (the navigator in a terminal, the browser in VS Code and the Desktop app)'],
   ['`ⓘ`', 'Opens this Info pane'],
   ['`☰`', 'Puts `/context` into the prompt box'],
   ['`◔`', 'Puts `/usage` into the prompt box'],
   ['`⧉`', 'Copies, as Markdown: the shown prompt and its answer (browser), or the shown tab (Info pane)'],
   ['`♻`', 'Puts the shown prompt back into the prompt box (browser)'],
   ['`▲` `▼`', 'The previous or next prompt that contains the search text (browser)'],
-  ['`↓ n`', 'Sets the browser to prompt n (VS Code; its tab stays behind this pane), or scrolls the chat there (terminal)'],
+  ['`↓ n`', 'Sets the browser to prompt n (VS Code, Desktop app; its tab stays behind this pane), or scrolls the chat there (terminal)'],
 ]
 
 export const BUTTON_HEADER = ['Button', 'What it does'] as const
