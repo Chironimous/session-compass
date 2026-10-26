@@ -1,6 +1,6 @@
 # Session Compass
 
-**Master long sessions in Claude Code CLI and the Claude Code extension for VS Code!**
+**Master long sessions in Claude Code CLI, Claude Code Desktop, and the Claude Code extension for VS Code!**
 
 ![Session Compass's band above the prompt in VS Code: context fill, history graph and buttons](image/README/1793019543046.png)
 
@@ -16,7 +16,7 @@ Session Compass is a [Claude Code mod](https://code.claude.com/docs/en/plugins/m
 
 ## This mod is for you if:
 
-- you have long conversations in Claude Code
+- you have long conversations in Claude Code (Desktop app, CLI or VS Code extension)
 - you sometimes don't know what was discussed in which session
 - you continue sessions after some time and need a refresher on what was done
 - you want a new or compacted session to remember the essentials of a conversation
@@ -25,15 +25,15 @@ Session Compass is a [Claude Code mod](https://code.claude.com/docs/en/plugins/m
 
 ## This mod is not for you if:
 
-- you work only in the claude.ai chat or the Claude Desktop app
+- you work only in the claude.ai chat
 - you only have a few short conversations per project
 - you don't know what a **context window** or **compaction** is ;-)
 
 ## Installation
 
-**Requirements:** Claude Code 2.1.310 or later, as the VS Code extension or
-the CLI. Install it once: the VS Code extension and the CLI share their
-plugins, so Session Compass then works in both.
+**Requirements:** Claude Code 2.1.310 or later, as the VS Code extension,
+the CLI, or in the Claude Desktop app, and `git` on your computer (Claude
+Code uses it to download the marketplace from GitHub). Install it once: the VS Code extension, Claude Desktop and the CLI share their plugins, so Session Compass then works in all three.
 
 ### In VS Code
 
@@ -41,6 +41,19 @@ plugins, so Session Compass then works in both.
 2. On the **Marketplaces** tab, add `Chironimous/session-compass`.
 3. On the **Plugins** tab, find Session Compass, click **Install** and choose
    **Install for you**.
+
+### In the Claude Desktop app
+
+1. In a local session of the **Code** tab, click **+** next to the prompt
+   box, then **Plugins** and **Browse plugins**. The **Plugins** settings
+   page opens.
+2. Click **+ Add**, then **Add marketplace** and **Add from a repository**.
+   Enter `Chironimous/session-compass` and click **Sync**.
+3. Find Session Compass on the **Discover** tab and install it for your user
+   account.
+
+If you already added the marketplace in VS Code or a terminal, skip step 2:
+the Desktop app shares its plugins with both.
 
 ### In a terminal
 
@@ -67,8 +80,9 @@ while a session was open, run `/reload-plugins` in that session.
 
 Session Compass adds a band above the prompt that shows how full the context
 window is and how it grew over the session. In a terminal it jumps back to
-earlier prompts; in the VS Code panel it opens a conversation browser that
-shows them. On both, an Info pane summarizes the conversation.
+earlier prompts; in VS Code and the Desktop app it opens a conversation
+browser that shows them. Everywhere, an Info pane summarizes the
+conversation.
 
 **Terminal:**
 
@@ -80,23 +94,24 @@ Context 30% ███░░░░░░░   ▁▂▂▃▃▄▅▅▆▇   �
 
 ![The band in the VS Code panel](image/README/1793020995580.png)
 
-| Part                      | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Context 30%` and bar   | The context window's current fill. Green below 80 %, yellow from 80 to 90 %, red above 90 %.                                                                                                                                                                                                                                                                                                                                                                     |
-| Graph                     | One point per model request of the main conversation, on a fixed 0–100 % scale of the context window.                                                                                                                                                                                                                                                                                                                                                           |
-| `◀◀ ◀ 12/27 ▶ ▶▶` | The prompt navigator: in a terminal it sits in the band, in VS Code in its own pane, the [conversation browser](#the-conversation-browser-vs-code). `12/27` is the current prompt of all prompts in the session. `◀` and `▶` move one prompt, `◀◀` and `▶▶` move ten, and pressing `12/27` jumps to the current prompt again. In a terminal, each press scrolls the chat so the prompt sits at the top. A new prompt moves the navigator to it. |
-| `⇅`                    | In the VS Code panel only, in place of the navigator: opens the [conversation browser](#the-conversation-browser-vs-code).                                                                                                                                                                                                                                                                                                                                        |
-| `ⓘ`                    | Opens the [Info pane](#the-info-pane): Summary, Timeline and Details of the conversation.                                                                                                                                                                                                                                                                                                                                                                         |
-| `☰`                    | Puts `/context` into the prompt box, on a new line if you have already typed something. Press Enter to open Claude Code's context view.                                                                                                                                                                                                                                                                                                                        |
-| `◔`                    | The same for `/usage`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Part                      | What it does                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Context 30%` and bar   | The context window's current fill. Green below 80 %, yellow from 80 to 90 %, red above 90 %.                                                                                                                                                                                                                                                                                                                                                                                 |
+| Graph                     | One point per model request of the main conversation, on a fixed 0–100 % scale of the context window.                                                                                                                                                                                                                                                                                                                                                                       |
+| `◀◀ ◀ 12/27 ▶ ▶▶` | The prompt navigator: in a terminal it sits in the band, in VS Code and the Desktop app in its own pane, the [conversation browser](#the-conversation-browser). `12/27` is the current prompt of all prompts in the session. `◀` and `▶` move one prompt, `◀◀` and `▶▶` move ten, and pressing `12/27` jumps to the current prompt again. In a terminal, each press scrolls the chat so the prompt sits at the top. A new prompt moves the navigator to it. |
+| `⇅`                    | In VS Code and the Desktop app, in place of the navigator: opens the [conversation browser](#the-conversation-browser).                                                                                                                                                                                                                                                                                                                                                       |
+| `ⓘ`                    | Opens the [Info pane](#the-info-pane): Summary, Timeline and Details of the conversation.                                                                                                                                                                                                                                                                                                                                                                                     |
+| `☰`                    | Puts `/context` into the prompt box, on a new line if you have already typed something. Press Enter to open Claude Code's context view.                                                                                                                                                                                                                                                                                                                                    |
+| `◔`                    | The same for `/usage`.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 A prompt is every prompt you type and every slash command. Task notifications
 and other messages Claude Code adds itself are not counted.
 
-## The conversation browser (VS Code)
+## The conversation browser
 
-Claude Code's VS Code panel doesn't let a mod scroll the chat, so there `⇅`
-opens a browser that shows one prompt and its answer at a time.
+In VS Code and the Desktop app, Claude Code doesn't let a mod scroll the
+chat, so there `⇅` opens a browser that shows one prompt and its answer at a
+time.
 
 ![The conversation browser: a prompt and its answer, with navigation, copy, reuse and search](image/README/1793020414763.png)
 
@@ -124,8 +139,7 @@ the browser opens, and no update of the mod touches it.
 
 ## The Info pane
 
-`ⓘ` opens a pane about the current conversation, in a terminal and in VS
-Code, with three tabs:
+`ⓘ` opens a pane about the current conversation, with three tabs:
 
 ![The Info pane with the summary of a conversation](image/README/1793020751548.png)
 
@@ -133,8 +147,8 @@ Code, with three tabs:
   items, in the language of your prompts.
 - **Timeline:** topics, tasks, decisions and findings, each under the prompt
   it belongs to, plus model changes, compactions, interruptions and errors.
-  `↓ n` takes you to that prompt: in the browser in VS Code, in the chat in a
-  terminal.
+  `↓ n` takes you to that prompt: in the browser (VS Code, Desktop app), in
+  the chat (terminal).
 - **Details:** id, dates, models, token counts, number of prompts, whether the
   conversation was compacted, and what each button does.
 
@@ -160,7 +174,7 @@ table.
 
 | Button                                  | What it does                                                                          |
 | --------------------------------------- | ------------------------------------------------------------------------------------- |
-| `⇅`                                  | Opens the conversation browser (VS Code)                                              |
+| `⇅`                                  | Opens the conversation browser (VS Code, Desktop app)                                 |
 | `◀◀` `◀` `n/N` `▶` `▶▶` | Ten or one prompt back or forward; `n/N` shows the current prompt again             |
 | `ⓘ`                                  | Opens the Info pane                                                                   |
 | `☰`                                  | Puts `/context` into the prompt box                                                 |
@@ -168,7 +182,7 @@ table.
 | `⧉`                                  | Copies the shown prompt and answer (browser) or the shown tab (Info pane) as Markdown |
 | `♻`                                  | Puts the shown prompt back into the prompt box (browser)                              |
 | `▲` `▼`                           | The previous or next prompt that contains the search text (browser)                   |
-| `↓ n`                                | Goes to prompt n: in the browser (VS Code) or in the chat (terminal)                  |
+| `↓ n`                                | Goes to prompt n: in the browser (VS Code, Desktop app) or in the chat (terminal)     |
 
 ## Good to know
 
@@ -176,15 +190,18 @@ table.
   between releases, so a Claude Code update can break Session Compass until
   it is updated too.
 - **Jumping in the chat** works in a terminal with Claude Code's fullscreen
-  layout, the default. The VS Code panel doesn't allow it; use the browser
-  there.
+  layout, the default. VS Code and the Desktop app don't allow it; the
+  browser takes its place there.
 - **Narrow windows:** the band and the browser leave out their less important
   parts.
 - **Windows' classic console** (`conhost.exe`) lacks the graph's block
   characters and shows boxes; Windows Terminal and VS Code's terminal draw
   the graph correctly.
-- Tested on Windows and macOS, in the terminal and in VS Code. The Claude
-  Desktop app isn't supported yet.
+- **Local sessions only:** the mod needs the session's files on your
+  computer, so it doesn't run in remote (cloud) or remote-controlled sessions, nor in the Desktop
+  app's WSL sessions, where Claude Code loads no plugins.
+- Tested on Windows and macOS, in the terminal, VS Code and the Desktop
+  app's Code tab.
 
 ## Updating
 
@@ -204,6 +221,8 @@ A session that is already open picks up the new version with
 
 - **VS Code:** in `/plugins`, on the **Plugins** tab, click the trash icon on
   Session Compass's row.
+- **Desktop app:** click **+** next to the prompt box, then **Plugins** and
+  **Manage plugins**.
 - **Terminal:** in `/plugin`, on the **Installed** tab, select Session Compass
   and choose **Uninstall**.
 - **Shell:** `claude plugin uninstall session-compass@chironimous`
