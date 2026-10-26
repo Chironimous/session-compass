@@ -240,33 +240,88 @@ folders.
 ## What it reads and writes
 
 Session Compass runs with your permissions, like every mod. This is
-everything it touches:
+everything it touches.
 
-- **Reads** the current session's transcript,
+**Reads**
+
+- The current session's transcript,
   `~/.claude/projects/<project>/<session-id>.jsonl` (or under
   `CLAUDE_CONFIG_DIR`), when it rebuilds a session's history and whenever the
-  browser or the Info pane opens or refreshes. It streams the file through
-  `cat`, or `cmd.exe /c type` on Windows.
-- **Reads** the environment variables `CLAUDE_CONFIG_DIR`, `HOME`, `OS` and
-  `USERPROFILE`, to find the transcript and your `.ccscignore`; `OS` also
-  sizes the band in the VS Code panel, whose cells are wider on the Mac.
-- **Writes** its own store, which Claude Code keeps at
+  browser or the Info pane opens or refreshes. To find it, it lists the
+  folders in `~/.claude/projects/` when the expected folder doesn't hold it.
+- The session's context usage, from Claude Code.
+- Its own files: `.ccscignore.def` in its folder, your rules in
+  `~/.claude/session-compass/.ccscignore`, and the Info pane's results in
+  `.ccsc/` of your project.
+- The environment variables `CLAUDE_CONFIG_DIR`, `HOME`, `OS` and
+  `USERPROFILE`, to find the transcript and your rules; `OS` also sizes the
+  band in the VS Code panel, whose cells are wider on the Mac.
+- The draft in your prompt box, when you press `☰`, `◔` or `♻`, only to know
+  whether the text it adds needs a new line first.
+
+**Runs**
+
+- One program, to read the transcript: `cat <transcript>`, or
+  `cmd.exe /d /c type <transcript>` on Windows. Transcripts often exceed the
+  4 MiB that Claude Code's own file read accepts, and a program streams them.
+- Two Claude Code commands, `/context` and `/usage`, only when you press `☰`
+  or `◔` and the prompt box refuses to take the command; otherwise those
+  buttons only put the command into the prompt box.
+
+**Writes**
+
+- Its own store, which Claude Code keeps at
   `~/.claude/plugins/store/session-compass_*.json`: one history per session
   (token counts, the first 100 characters of each prompt, each prompt's
   message id), at most 200 sessions and 2 MiB, the oldest dropped first; and
   the Info pane's recent run times, for its time estimate.
-- **Writes** `~/.claude/session-compass/.ccscignore` (or under
-  `CLAUDE_CONFIG_DIR`), your rules for the browser.
-- **Writes** `.ccsc/` in the project the session runs in: the Info pane's
-  summary and timeline, and `.ccsc/.gitignore`.
-- **Calls a model** only when you press "Generate summary & timeline" or
-  "Regenerate": two requests to Claude Opus through the session's own client,
-  with the digest of the conversation's prompts and answers as input. It
-  makes no other network requests and never submits a prompt into the
-  conversation. If the prompt box refuses the text, `☰` and `◔` run the
-  command directly instead.
+- `~/.claude/session-compass/.ccscignore` (or under `CLAUDE_CONFIG_DIR`),
+  your rules for the browser, created once from `.ccscignore.def`.
+- `.ccsc/` in the project the session runs in: the Info pane's
+  `summary.md` and `timeline.json` per session, and a `.gitignore` inside
+  that folder, so that git ignores it.
 
-To check this yourself, clone the repository
+Nothing else: it never touches your project's own `.gitignore`, and it
+writes no settings, build, start-up or instruction files.
+
+**Sends**
+
+- Two requests to Claude Opus through the session's own client, only when
+  you press "Generate summary & timeline" or "Regenerate", with the digest
+  of the conversation's prompts and answers as input.
+- Text to your clipboard, only when you press `⧉` or `⧉ Session`.
+- Text into your prompt box, only when you press `☰`, `◔` or `♻`. It never
+  submits a prompt.
+- Short notices on screen, and diagnostic lines to Claude Code's debug log.
+
+It makes no network requests of its own.
+
+**Hooks**
+
+| Event | What the mod does there |
+| --- | --- |
+| `session.start` | reads the context usage and loads the session's history |
+| `session.measure` | updates the context usage and the window size |
+| `prompt.submit` | counts your prompt for the navigator; passes it on unchanged |
+| `session.append` | notes a stored prompt's message id, the navigator's jump target; passes the row on unchanged |
+| `turn.step` | records the context size of each request for the graph, after the request went on |
+| `turn.complete` | saves the history and refreshes the open browser or Info pane |
+| `session.end` | saves the history |
+| `ui.render` (band) | draws the band above the prompt |
+| `ui.render` (pane) | draws the browser and the Info pane; other plugins' panes pass on |
+
+**Bundled code**
+
+`hooks/vendor/fast-png.js` is the fast-png library (with fflate and
+iobuffer), which shrinks pasted screenshots to the browser's thumbnails.
+It carries one small helper of its own: fast-png asks for a "latin1" text
+decoder, which the mod's environment lacks, so the helper takes the
+environment's `TextDecoder` (from `globalThis`) and adds that one decoding;
+it has a single getter, `encoding`. The library itself reads only the
+standard typed-array types (`Uint8Array` and its kin) from `globalThis`.
+`hooks/vendor/BUILD.txt` says how the bundle was built.
+
+To check all this yourself, clone the repository
 (`git clone https://github.com/Chironimous/session-compass`) and run
 `claude plugin validate session-compass`. Its `hooks:` and `calls:` lines list
 every event the mod handles and everything it asks Claude Code to do.
