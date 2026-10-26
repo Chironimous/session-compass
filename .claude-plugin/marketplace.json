@@ -9,7 +9,7 @@
     {
       "name": "session-compass",
       "source": "./",
-      "description": "See how full your context is, jump back to any prompt, and get a summary of the whole conversation."
+      "description": "The Claude Code Mod with the power user features Anthropic forgot to implement"
     }
   ]
 }

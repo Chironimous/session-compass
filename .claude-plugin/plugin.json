@@ -1,8 +1,8 @@
 {
   "name": "session-compass",
   "displayName": "Session Compass",
-  "version": "0.7.1",
-  "description": "See how full your context is, jump back to any prompt, and get a summary of the whole conversation.",
+  "version": "0.7.2",
+  "description": "The Claude Code Mod with the power user features Anthropic forgot to implement",
   "author": { "name": "Chironimous" },
   "homepage": "https://github.com/Chironimous/session-compass",
   "repository": "https://github.com/Chironimous/session-compass",
