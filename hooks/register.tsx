@@ -965,10 +965,11 @@ export const register: Register = on => {
           <Box marginLeft={2}>
             <Svg
               source={svgSource(shown, shown.window, GRAPH_WIDTH, GRAPH_HEIGHT, redraw)}
-              // A space: where the panel does not draw the picture it shows
-              // the alt text, and a sentence there pushed the buttons onto a
-              // second line (decided 2026-10-26).
-              alt=" "
+              // One short word: where the VS Code panel does not draw the
+              // picture it shows the alt text, and a sentence there pushed the
+              // buttons onto a second line; a blank alt (" ") made the Desktop
+              // app draw no graph at all (the contract requires an alt).
+              alt="Graph"
               width={GRAPH_WIDTH}
               height={GRAPH_HEIGHT}
               isInteractive

@@ -1,7 +1,7 @@
 {
   "name": "session-compass",
   "displayName": "Session Compass",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "See how full your context is, jump back to any prompt, and get a summary of the whole conversation.",
   "author": { "name": "Chironimous" },
   "homepage": "https://github.com/Chironimous/session-compass",
