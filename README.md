@@ -176,7 +176,8 @@ The mod is code that runs with your permissions, like every mod.
   seen, and each time the browser or the Info pane opens or refreshes. It
   streams the file through `cat`, or `cmd.exe /c type` on Windows.
 - **Reads** the environment variables `CLAUDE_CONFIG_DIR`, `HOME`, `OS` and
-  `USERPROFILE`, to find the transcript and your `.ccscignore`.
+  `USERPROFILE`, to find the transcript and your `.ccscignore`; `OS` also
+  sizes the band in the VS Code panel, whose cells are wider on the Mac.
 - **Writes** its own store, which Claude Code keeps at
   `~/.claude/plugins/store/session-compass_*.json`: one history per session
   (token counts, the first 100 characters of each prompt, each prompt's
@@ -237,7 +238,7 @@ in your shell, then `/reload-plugins` in open sessions. The store file
 
 ## Development status
 
-Version 0.6.0. In daily use by its author. Claude Code's mods API is in early access and changes between
+Version 0.6.1. In daily use by its author. Claude Code's mods API is in early access and changes between
 releases, so a Claude Code update can break the mod.
 
 What works:

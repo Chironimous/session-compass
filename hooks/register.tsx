@@ -32,7 +32,7 @@ import {
   type TimelineRecord,
 } from './info'
 import { colorFor, promptsLabel, rasterCells, svgSource } from './graph'
-import { BAR_COLUMNS, bandParts, GRAPH_COLUMNS, headerParts, SPARK_CELLS } from './layout'
+import { BAR_COLUMNS, bandParts, GRAPH_COLUMNS, headerParts, PANEL_SCALE_NOT_WINDOWS, SPARK_CELLS } from './layout'
 import {
   appendLive,
   clipPrompt,
@@ -72,6 +72,12 @@ const infoVersion = atom({ plugin: 'session-compass', key: 'infoVersion' } as co
 const CELLS = 10
 /** The terminal legend's button column: the widest label, `◀◀ ◀ n/N ▶ ▶▶`, and a gap. */
 const LEGEND_BUTTON_COLUMNS = 16
+/**
+ * VS Code panel: the gap within a pair of band buttons, about a pixel. The
+ * panel draws Box spacing as `ch` (the width of its "0", some 7 px) and keeps
+ * fractions (extension 2.1.310).
+ */
+const PAIR_GAP = 0.15
 /**
  * The graph keeps its size although the bar shrank (decided 2026-10-19). In
  * the VS Code panel it is a measured constant: at 240 the graph showed
@@ -910,7 +916,10 @@ export const register: Register = on => {
     // Every terminal gets the graph (decided 2026-10-18, KISS): the classic
     // Windows console's fonts lack the eighth blocks and show boxes there.
     const sparkFits = Raster !== undefined && e.props.bodyColumns >= BAR_COLUMNS + GRAPH_COLUMNS
-    const parts = bandParts(e.surface, e.props.bodyColumns)
+    // The panel's cells are wider outside Windows (layout.ts); without an
+    // answer the band keeps the widths measured on Windows.
+    const mac = e.surface === 'vscode' && (await $.env.get('OS').then(os => os !== 'Windows_NT', () => false))
+    const parts = bandParts(e.surface, e.props.bodyColumns, mac ? PANEL_SCALE_NOT_WINDOWS : 1)
     const offer = (command: string) => () => {
       offerCommand($, command).catch(error => debug($, `/${command} not run: ${messageOf(error)}`))
     }
@@ -975,9 +984,16 @@ export const register: Register = on => {
             {/* VS Code's panel refuses a mod's scroll to a chat message
                 (extension 2.1.309), so there one button opens the browser
                 in place of the navigator; everywhere else the navigator. */}
+            {/* VS Code: two pairs, ⇅ ⓘ (the panes) and ☰ ◔ (the commands),
+                about a pixel apart within a pair so that buttons never touch,
+                a cell between the pairs (decided 2026-10-26). */}
             {e.surface === 'vscode' ? (
-              <Box marginLeft={groupGap}>
+              <Box marginLeft={groupGap} flexWrap="nowrap">
                 <Button key="browse" label="⇅" onPress={browse} />
+                <Box marginLeft={PAIR_GAP}>
+                  {/* ⓘ (U+24D8): the Info pane, an "i in a circle". */}
+                  <Button key="info" label="ⓘ" onPress={showInfo} />
+                </Box>
               </Box>
             ) : prompts > 0 ? (
               <Box marginLeft={groupGap} flexWrap="nowrap">
@@ -996,20 +1012,31 @@ export const register: Register = on => {
                 </Box>
               </Box>
             ) : undefined}
-            <Box marginLeft={groupGap} flexWrap="nowrap">
-              {/* ⓘ (U+24D8): the Info pane, an "i in a circle". */}
-              <Button key="info" label="ⓘ" onPress={showInfo} />
-              {parts.commands ? (
-                <Box marginLeft={buttonGap}>
+            {e.surface === 'vscode' ? (
+              parts.commands ? (
+                <Box marginLeft={groupGap} flexWrap="nowrap">
                   <Button key="context" label="☰" onPress={offer('context')} />
+                  <Box marginLeft={PAIR_GAP}>
+                    <Button key="usage" label="◔" onPress={offer('usage')} />
+                  </Box>
                 </Box>
-              ) : undefined}
-              {parts.commands ? (
-                <Box marginLeft={buttonGap}>
-                  <Button key="usage" label="◔" onPress={offer('usage')} />
-                </Box>
-              ) : undefined}
-            </Box>
+              ) : undefined
+            ) : (
+              <Box marginLeft={groupGap} flexWrap="nowrap">
+                {/* ⓘ (U+24D8): the Info pane, an "i in a circle". */}
+                <Button key="info" label="ⓘ" onPress={showInfo} />
+                {parts.commands ? (
+                  <Box marginLeft={buttonGap}>
+                    <Button key="context" label="☰" onPress={offer('context')} />
+                  </Box>
+                ) : undefined}
+                {parts.commands ? (
+                  <Box marginLeft={buttonGap}>
+                    <Button key="usage" label="◔" onPress={offer('usage')} />
+                  </Box>
+                ) : undefined}
+              </Box>
+            )}
           </Box>
         )}
       </Box>

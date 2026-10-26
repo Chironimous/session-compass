@@ -30,6 +30,14 @@ const PANEL_BAND_NO_BAR = 38
 const PANEL_HEADER_ALL = 46
 const PANEL_HEADER_NO_REUSE = 39
 const PANEL_HEADER_NO_DATE = 28
+/**
+ * The panel's band thresholds outside Windows. The panel's cell is the wider
+ * of "0" and "─" in its UI font, a wider cell on the Mac: at the panel's
+ * maximum width the Mac reported 49 columns where Windows reported 70
+ * (temporary probes, 2026-10-26), so the band's measured widths are scaled by
+ * 49/70 there and rounded up. Linux is untested and treated like the Mac.
+ */
+export const PANEL_SCALE_NOT_WINDOWS = 49 / 70
 
 /** What the band draws: the bar, the graph, the buttons, and ☰ ◔ among them. */
 export type BandParts = { bar: boolean; graph: boolean; buttons: boolean; commands: boolean }
@@ -37,10 +45,11 @@ export type BandParts = { bar: boolean; graph: boolean; buttons: boolean; comman
 /**
  * The band's parts for its width. The terminal counts exact cells and, below
  * the narrowest variant, drops the buttons and keeps bar and graph (it cannot
- * wrap); the VS Code panel uses the measured widths and wraps below them. The
- * Desktop app is untested and keeps everything.
+ * wrap); the VS Code panel uses the measured widths, times `panelScale` (1 on
+ * Windows, else `PANEL_SCALE_NOT_WINDOWS`), and wraps below them. The Desktop
+ * app is untested and keeps everything.
  */
-export function bandParts(surface: string, columns: number): BandParts {
+export function bandParts(surface: string, columns: number, panelScale = 1): BandParts {
   const all = { bar: true, graph: true, buttons: true, commands: true }
   if (surface === 'terminal') {
     if (columns >= BAR_COLUMNS + GRAPH_COLUMNS + NAV_COLUMNS + BUTTON_COLUMNS) return all
@@ -50,9 +59,10 @@ export function bandParts(surface: string, columns: number): BandParts {
     return { ...all, buttons: false, commands: false }
   }
   if (surface === 'vscode') {
-    if (columns >= PANEL_BAND_ALL) return all
-    if (columns >= PANEL_BAND_NO_COMMANDS) return { ...all, commands: false }
-    if (columns >= PANEL_BAND_NO_BAR) return { ...all, bar: false, commands: false }
+    const at = (measured: number) => Math.ceil(measured * panelScale)
+    if (columns >= at(PANEL_BAND_ALL)) return all
+    if (columns >= at(PANEL_BAND_NO_COMMANDS)) return { ...all, commands: false }
+    if (columns >= at(PANEL_BAND_NO_BAR)) return { ...all, bar: false, commands: false }
     return { bar: false, graph: false, buttons: true, commands: false }
   }
   return all
