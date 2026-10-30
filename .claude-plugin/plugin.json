@@ -1,8 +1,8 @@
 {
   "name": "session-compass",
   "displayName": "Session Compass",
-  "version": "0.7.3",
-  "description": "The Claude Code Mod with the power user features Anthropic forgot to implement",
+  "version": "0.7.4",
+  "description": "The power user features for long conversations that Anthropic forgot to implement in Claude Code: rapidly browse a session's prompts and answers without clutter, search them, understand a conversation through its summary and timeline, get a graph of the context window usage history, and copy prompt/response pairs or whole conversations as Markdown.",
   "author": { "name": "Chironimous" },
   "homepage": "https://github.com/Chironimous/session-compass",
   "repository": "https://github.com/Chironimous/session-compass",

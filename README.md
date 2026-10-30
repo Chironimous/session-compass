@@ -1,6 +1,6 @@
 # Session Compass for Claude Code
 
-**The power user features Anthropic forgot to implement in Claude Code CLI, Claude Code in the Desktop app, and the Claude Code extension for VS Code!**
+**The power user features for long conversations that Anthropic forgot to implement in Claude Code!**
 
 ![A tangled conversation becomes browse, search, understand and document](image/README/1793051309836.png)
 
@@ -213,7 +213,9 @@ table.
 Updates arrive only when you ask for them, unless you turn on auto-update:
 
 - **VS Code:** in `/plugins`, on the **Marketplaces** tab, click the refresh
-  icon next to `chironimous`.
+  icon next to `chironimous`. Then, on the **Plugins** tab, click the
+  refresh icon on `session-compass@chironimous`; this installs and loads the
+  new version.
 - **Terminal:** in `/plugin`, on the **Marketplaces** tab, select
   `chironimous` and choose **Update marketplace**, or **Enable auto-update**
   to get every new version automatically.
@@ -275,11 +277,14 @@ everything it touches.
   (token counts, the first 100 characters of each prompt, each prompt's
   message id), at most 200 sessions and 2 MiB, the oldest dropped first; and
   the Info pane's recent run times, for its time estimate.
-- `~/.claude/session-compass/.ccscignore` (or under `CLAUDE_CONFIG_DIR`),
-  your rules for the browser, created once from `.ccscignore.def`.
+- `~/.claude/session-compass/.ccscignore` (or under `CLAUDE_CONFIG_DIR`):
+  your rules for the browser, a plain text list that only Session Compass
+  reads; Claude Code itself does not read it. Created once from
+  `.ccscignore.def`. Its folder depends on your home or `CLAUDE_CONFIG_DIR`,
+  so the mod builds the path when it runs.
 - `.ccsc/` in the project the session runs in: the Info pane's
-  `summary.md` and `timeline.json` per session, and a `.gitignore` inside
-  that folder, so that git ignores it.
+  `summary.md` and `timeline.json` per session, and a `.gitignore`
+  containing only `*`, so that git ignores that folder and nothing else.
 
 Nothing else: it never touches your project's own `.gitignore`, and it
 writes no settings, build, start-up or instruction files.
@@ -293,22 +298,29 @@ writes no settings, build, start-up or instruction files.
 - Text into your prompt box, only when you press `☰`, `◔` or `♻`. It never
   submits a prompt.
 - Short notices on screen, and diagnostic lines to Claude Code's debug log.
+- Its live state, to the other mods of the same session: Claude Code lets
+  every mod read every other mod's state. Session Compass's state holds the
+  context percentage, the session's history (token counts and the first 100
+  characters of each prompt), the browser's position and search text, and
+  the Info pane's tab. It stays in memory while the session runs. Mods run
+  with your permissions and can read your conversation anyway, so this gives
+  no mod access it would not already have.
 
 It makes no network requests of its own.
 
 **Hooks**
 
-| Event | What the mod does there |
-| --- | --- |
-| `session.start` | reads the context usage and loads the session's history |
-| `session.measure` | updates the context usage and the window size |
-| `prompt.submit` | counts your prompt for the navigator; passes it on unchanged |
-| `session.append` | notes a stored prompt's message id, the navigator's jump target; passes the row on unchanged |
-| `turn.step` | records the context size of each request for the graph, after the request went on |
-| `turn.complete` | saves the history and refreshes the open browser or Info pane |
-| `session.end` | saves the history |
-| `ui.render` (band) | draws the band above the prompt |
-| `ui.render` (pane) | draws the browser and the Info pane; other plugins' panes pass on |
+| Event                | What the mod does there                                                                      |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| `session.start`    | reads the context usage and loads the session's history                                      |
+| `session.measure`  | updates the context usage and the window size                                                |
+| `prompt.submit`    | counts your prompt for the navigator; passes it on unchanged                                 |
+| `session.append`   | notes a stored prompt's message id, the navigator's jump target; passes the row on unchanged |
+| `turn.step`        | records the context size of each request for the graph, after the request went on            |
+| `turn.complete`    | saves the history and refreshes the open browser or Info pane                                |
+| `session.end`      | saves the history                                                                            |
+| `ui.render` (band) | draws the band above the prompt                                                              |
+| `ui.render` (pane) | draws the browser and the Info pane; other plugins' panes pass on                            |
 
 **Bundled code**
 
@@ -336,6 +348,9 @@ account and no telemetry, and it sends nothing to anyone but Claude.
   summaries and timelines in your projects' `.ccsc/` folders. Your prompts may
   contain personal data, so these files may too. Uninstalling leaves them;
   [Uninstall](#uninstall) says where they are.
+- Other mods in the same session can read its live state, which includes
+  the first 100 characters of each prompt
+  ([What it reads and writes](#what-it-reads-and-writes) says what else).
 - Only when you press "Generate summary & timeline" or "Regenerate" does it
   send a digest of the conversation to Claude Opus, through your own Claude
   Code session. Anthropic's terms and privacy policy apply to those requests,

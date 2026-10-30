@@ -9,7 +9,7 @@
     {
       "name": "session-compass",
       "source": "./",
-      "description": "The Claude Code Mod with the power user features Anthropic forgot to implement"
+      "description": "The power user features for long conversations that Anthropic forgot to implement in Claude Code: rapidly browse a session's prompts and answers without clutter, search them, understand a conversation through its summary and timeline, get a graph of the context window usage history, and copy prompt/response pairs or whole conversations as Markdown."
     }
   ]
 }
